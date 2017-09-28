@@ -1,6 +1,7 @@
 package com.att.ticketwala.service.test;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.junit.After;
@@ -8,17 +9,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.att.ticketwala.admin.service.api.MovieShowsService;
-import com.att.ticketwala.admin.service.impl.MovieShowsServiceImpl;
 import com.att.ticketwala.service.api.MovieShow;
 import com.att.ticketwala.service.api.Result;
+import com.att.ticketwala.service.api.TicketWalaService;
+import com.att.ticketwala.service.impl.TicketWalaServiceImpl;
 
 public class TestMovieShowsService {
-	private MovieShowsService movieShowService = null;
+	private TicketWalaService movieShowService = null;
+	
+	public TestMovieShowsService() {
+		this.movieShowService = new TicketWalaServiceImpl();
+		this.movieShowService.deleteAllMovieShows();
+	}
 	
 	@Before
 	public void setUp() throws Exception {
-		this.movieShowService = new MovieShowsServiceImpl();
+
 	}
 
 	@After
@@ -42,13 +48,25 @@ public class TestMovieShowsService {
 		Assert.assertTrue(movieShow.getId().equals(id));
 	}
 
-//	@Test
-//	public void testGetMovieShow() {
-//		
-//	}
-	
-	public static void main(String[] args) {
+	@Test
+	public void testGetMovieShows() {
 		LocalDateTime ldt = LocalDateTime.of(2016, 10, 1, 20, 30);
-		System.out.println(ldt);
+		int duration = 90;
+		
+		HashMap<String, MovieShow> movieShows = this.movieShowService.getMovieShows();
+		int sizeBefore = movieShows.size();
+		
+		MovieShow movieShow = new MovieShow("1", "movie1", ldt, duration);
+		Result res = this.movieShowService.addMovieShow(movieShow);
+		Assert.assertTrue(res != null && res.isSuccess());
+		MovieShow movieShow1 = new MovieShow("2", "movie2", ldt, duration);
+		res = this.movieShowService.addMovieShow(movieShow1);
+		Assert.assertTrue(res != null && res.isSuccess());
+		
+		movieShows = this.movieShowService.getMovieShows();
+		
+		Assert.assertTrue(movieShows.size() == sizeBefore + 2);
 	}
+	
+
 }

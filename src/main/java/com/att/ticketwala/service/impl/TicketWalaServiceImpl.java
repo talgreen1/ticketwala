@@ -4,43 +4,33 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.att.ticketwala.dao.service.api.MovieShowDao;
+import com.att.ticketwala.dao.service.impl.MovieShowDaoImpl;
 import com.att.ticketwala.service.api.MovieShow;
 import com.att.ticketwala.service.api.Order;
-import com.att.ticketwala.service.api.Report;
 import com.att.ticketwala.service.api.Result;
 import com.att.ticketwala.service.api.Seat;
 import com.att.ticketwala.service.api.TicketWalaService;
 
 public class TicketWalaServiceImpl implements TicketWalaService {
 
-	private Map<String, MovieShow> shows = new HashMap<String, MovieShow>();
 	private Map<String, Order> orders = new HashMap<String, Order>();
+	private MovieShowDao dao = null;
 	
 	public TicketWalaServiceImpl() {
-		//this.shows.put("show1", new MovieShow("show1"));
+		this.dao = new MovieShowDaoImpl();
 	}
 
 	@Override
-	public Report getSalesReport() {
-		// TODO Auto-generated method stub
-		return null;
-	}
- 
-	@Override
-	public Result createOrder(String showName) {
+	public Result createOrder(String showId) {
 		String orderId = UUID.randomUUID().toString().substring(0, 5);
-		this.orders.put(orderId, new Order(orderId, this.shows.get(showName)));
+		this.orders.put(orderId, new Order(orderId, this.dao.fetchMovieShow(showId)));
 		return new Result(true, "New order created " + orderId);
 	}
 
 	@Override
 	public Order getOrder(String orderId) {
 		return this.orders.get(orderId);
-	}
-
-	@Override
-	public MovieShow getMovieShow(String showName) {
-		return this.shows.get(showName);
 	}
 
 	@Override
@@ -59,16 +49,36 @@ public class TicketWalaServiceImpl implements TicketWalaService {
 	@Override
 	public Result submitOrder(Order order) {
 		Result res = null;
-		MovieShow movieShow = this.shows.get(order.getMovieShow().getName());
+		MovieShow movieShow = this.dao.fetchMovieShow(order.getMovieShow().getId());
 		
-		movieShow.commitOrder(order);
+		//movieShow.commitOrder(order);
+		this.dao.commitOrder(order);
 		res = new Result(true, "Order submitted successfully. Tickets ordered.");
 		return res;
 	}
 
 	@Override
-	public String[] getAvailableShows() {
-		return this.shows.keySet().toArray(new String[shows.size()]);
+	public Result addMovieShow(MovieShow movieShow) {
+		return this.dao.createMovieShow(movieShow);
 	}
 
+	@Override
+	public MovieShow getMovieShow(String id) {
+		return this.dao.fetchMovieShow(id);
+	}
+
+	@Override
+	public HashMap<String, MovieShow> getMovieShows() {
+		return this.dao.fetchAll();
+	}
+
+	@Override
+	public void deleteAllMovieShows() {
+		this.dao.deleteAll();
+	}
+
+	@Override
+	public Result deleteMovieShow(String showId) {
+		return this.dao.deleteMovieShow(showId);
+	}
 }

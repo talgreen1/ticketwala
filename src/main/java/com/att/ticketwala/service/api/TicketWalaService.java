@@ -1,11 +1,19 @@
 package com.att.ticketwala.service.api;
 
+import java.util.HashMap;
+
 public interface TicketWalaService {
-	Report getSalesReport();
-	Result createOrder(String showName);
+
+	//Order APIs
+	Result createOrder(String showId);
 	Order getOrder(String orderId);
-	MovieShow getMovieShow(String showName);
 	Result addSeat(String orderId, Seat seat);
 	Result submitOrder(Order order);
-	String[] getAvailableShows();
+	
+	//Shows APIs
+	Result addMovieShow(MovieShow movieShow);
+	MovieShow getMovieShow(String showId);
+	HashMap<String, MovieShow> getMovieShows();
+	void deleteAllMovieShows();
+	Result deleteMovieShow(String showId);
 }

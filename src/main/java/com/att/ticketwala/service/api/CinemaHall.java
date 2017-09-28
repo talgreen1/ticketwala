@@ -51,4 +51,16 @@ public class CinemaHall {
 		return this.size;
 	}
 	
+	public int countAvailableSeats() {
+		int res = 0;
+		for (int i = 0; i < seatsArray.length; i++) {
+			for (int j = 0; j < seatsArray[i].length; j++) {
+				if (seatsArray[i][j].isSold()) {
+					res++;
+				}
+			}
+		}
+		return res;
+	}
+	
 }

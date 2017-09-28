@@ -28,16 +28,8 @@ public class MovieShow {
 		return name;
 	}
 	
-	public Report generateReport() {
-		return null;
-	}
-
 	public int getSeatsSold() {
-		return seatsSold;
-	}
-
-	public void setSeatsSold(int seatsSold) {
-		this.seatsSold = seatsSold;
+		return this.theatre.getSize() - this.theatre.countAvailableSeats();
 	}
 
 	public double getTicketPrice() {
@@ -53,7 +45,7 @@ public class MovieShow {
 	}
 	
 	public int getAvailableSeats() {
-		return this.getCinemaHall().getSize() - this.seatsSold;
+		return this.getCinemaHall().countAvailableSeats();
 	}
 	
 	public int getDuration() {

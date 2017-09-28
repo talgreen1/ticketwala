@@ -3,8 +3,11 @@ package com.att.ticketwala.service.api;
 import java.util.Arrays;
 import java.util.List;
 
+import com.att.ticketwala.service.impl.AddMovieShowCommand;
 import com.att.ticketwala.service.impl.AddSeatCommand;
 import com.att.ticketwala.service.impl.CreateOrderCommand;
+import com.att.ticketwala.service.impl.DeleteMovieShowCommand;
+import com.att.ticketwala.service.impl.ListMovieShowsCommand;
 import com.att.ticketwala.service.impl.PrintOrderCommand;
 import com.att.ticketwala.service.impl.PrintShowCommand;
 import com.att.ticketwala.service.impl.SubmitOrderCommand;
@@ -33,6 +36,15 @@ public class CommandFactory {
 			break;
 		case "order-details":
 			result = new PrintOrderCommand(service, commandArray.subList(1, commandArray.size()));
+			break;
+		case "add-movie-show":
+			result = new AddMovieShowCommand(service, commandArray.subList(1, commandArray.size()));
+			break;
+		case "delete-movie-show":
+			result = new DeleteMovieShowCommand(service, commandArray.subList(1, commandArray.size()));
+			break;
+		case "list-movie-shows":
+			result = new ListMovieShowsCommand(service, commandArray.subList(1, commandArray.size()));
 			break;
 		default:
 			result = new InvalidCommand(service, commandArray.subList(1, commandArray.size()));
