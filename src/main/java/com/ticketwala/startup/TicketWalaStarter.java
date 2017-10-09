@@ -2,6 +2,10 @@ package com.ticketwala.startup;
 
 import java.util.Scanner;
 
+import com.ticketwala.command.api.Command;
+import com.ticketwala.command.api.CommandFactory;
+import com.ticketwala.command.api.Result;
+
 public class TicketWalaStarter {
 
 	public static void main(String[] args) {
@@ -11,15 +15,20 @@ public class TicketWalaStarter {
 		
 		System.out.println("Enter your command:\n");
 		
+		CommandFactory commandFactory = new CommandFactory();
+		
 		while (!"bye".equals(userCommandLine)) {
 			try {
-				userCommandLine = scanner.nextLine();
-				String[] commandArray = userCommandLine.trim().split("\\s+"); //Split on white spaces of any size
 				
-				System.out.println("Command : " + commandArray[0]);
-				for (int i = 1; i < commandArray.length; i++) {
-					System.out.println("Arg" + i + " : " + commandArray[i]);
-				}
+				userCommandLine = scanner.nextLine();
+				
+				//Use Command Factory that will create a suitable command according to user input 
+                Command command = commandFactory.createCommand(userCommandLine);
+                
+                //Execute command and display result
+                Result result = command.execute();
+                System.out.println(result.getMessage());
+                
 			} catch (Exception e) {
 				System.err.println("Unexpected Command Line Error! " + e.getMessage());
 			}
