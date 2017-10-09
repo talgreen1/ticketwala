@@ -1,7 +1,6 @@
 package com.ticketwala.model;
 
 public class CinemaHall {
-	private int id;
 	private Seat[][] seatsArray;
 	private double seatPrice;
 	private int size;
@@ -15,10 +14,6 @@ public class CinemaHall {
 				seatsArray[i][j] = new Seat(i, j, seatPrice);
 			}
 		}
-	}
-	
-	public int getId() {
-		return id;
 	}
 
 	public Seat[][] getSeatsArray() {
