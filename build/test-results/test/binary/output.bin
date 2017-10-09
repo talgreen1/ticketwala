@@ -1,4 +1,0 @@
-KStoring Movie -> { name : movie1, date : 2016-10-01T20:30, duration : 90 }
-KStoring Movie -> { name : movie2, date : 2016-10-01T20:30, duration : 90 }
-QStoring Movie -> { name : Big Lebowsky, date : 2016-10-01T20:30, duration : 90 }
-zResult [success=true, message=Movie { name : Big Lebowsky, date : 2016-10-01T20:30, duration : 90 } Created Successfully]
