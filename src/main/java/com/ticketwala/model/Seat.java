@@ -38,5 +38,9 @@ public class Seat {
 		return "Seat [row=" + row + ", seatNumber=" + seatNumber + ", sold=" + sold + ", price=" + price + "]";
 	}
 	
-	
+	@Override
+	public boolean equals(Object obj) {
+		Seat otherSeat = (Seat)obj;
+		return this.row == otherSeat.row && this.seatNumber == otherSeat.seatNumber;
+	}
 }
