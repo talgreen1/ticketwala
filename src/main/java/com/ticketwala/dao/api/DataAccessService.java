@@ -22,11 +22,12 @@ public interface DataAccessService {
 	Result deleteMovieShow(String movieShowId);
 	Result updateMovieShow(MovieShow movieShow);
 	
-	//===============================
-	// Fetch all Movie Shows from DB
-	//===============================
-	HashMap<String, MovieShow> getMovies();
-	
+	//=====================================
+	// Fetch/Delete all Movie Shows from DB
+	//=====================================
+	HashMap<String, MovieShow> getAllMovieShows();
+	Result deleteAllMovieShows();
+
 	/**
 	 * Commits a user's order and updates the seats that were taken by this order to be unavailable.
 	 * 

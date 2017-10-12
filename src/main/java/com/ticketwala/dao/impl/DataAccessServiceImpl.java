@@ -34,13 +34,19 @@ public class DataAccessServiceImpl implements DataAccessService {
 	}
 
 	@Override
-	public HashMap<String, MovieShow> getMovies() {
+	public Result commitOrder(Order order) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Result commitOrder(Order order) {
+	public HashMap<String, MovieShow> getAllMovieShows() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result deleteAllMovieShows() {
 		// TODO Auto-generated method stub
 		return null;
 	}
