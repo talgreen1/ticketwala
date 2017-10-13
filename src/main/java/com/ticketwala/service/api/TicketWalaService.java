@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ticketwala.command.api.Result;
 import com.ticketwala.model.MovieShow;
+import com.ticketwala.model.Order;
 import com.ticketwala.model.Seat;
 
 public interface TicketWalaService {
@@ -63,4 +64,12 @@ public interface TicketWalaService {
 	 * @return Result
 	 */
 	Result deleteMovieShow(String showId);
+	
+	/**
+	 * Returns a previously created Order by its id
+	 * 
+	 * @param orderId
+	 * @return
+	 */
+	Order getOrder(String orderId);
 }
