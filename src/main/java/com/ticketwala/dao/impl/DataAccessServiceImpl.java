@@ -8,7 +8,6 @@ import java.util.prefs.Preferences;
 
 import com.ticketwala.command.api.Result;
 import com.ticketwala.dao.api.DataAccessService;
-import com.ticketwala.model.ModelFactory;
 import com.ticketwala.model.MovieShow;
 import com.ticketwala.model.Order;
 import com.ticketwala.model.Seat;
@@ -50,7 +49,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 		LocalDateTime ldt = LocalDateTime.parse(node.get("time", null));
 		int duration = node.getInt("duration", 0);
 		MovieShow m = new MovieShow(id, movieShowName, ldt, duration);
-		//Seat[][] seats = m.getCinemaHall().getSeats();
 		String[] takenSits = node.get("taken_seats", "").split("[,]");
 		
 		for (int i = 0; i < takenSits.length; i++) {
@@ -59,9 +57,8 @@ public class DataAccessServiceImpl implements DataAccessService {
 			}
 			int row = Integer.parseInt(takenSits[i]);
 			int seat = Integer.parseInt(takenSits[i+1]);
-			Seat newSeat = new ModelFactory().createSeat(row, seat);
-			newSeat.setSold(true);
-			m.getCinemaHall().setSeat(newSeat);
+			Seat s = m.getCinemaHall().getSeat(row, seat);
+			s.setSold(true);
 			i++;
 		}
 		return m;
