@@ -27,11 +27,18 @@ public class Order {
 	}
 	
 	public boolean addSeat(Seat seatToOrder) {
-		if (seats.contains(seatToOrder)) {
+		
+		//Check if seat is taken in the cinema hall
+		if (movieShow.getCinemaHall().getSeat(seatToOrder.getRow(), seatToOrder.getSeatNumber()).isSold()) {
+			return false;
+		}
+		//Check if seat already is in order
+		else if (seats.contains(seatToOrder)) {
 			return false;
 		} else {
 			return this.seats.add(seatToOrder);
 		}
+	
 	}
 	
 	public double getTotalCost() {
