@@ -3,6 +3,15 @@ package com.ticketwala.model;
 import java.time.LocalDateTime;
 
 public class MovieShow {
+	
+	/**
+	* These constants are here for simplicity.
+	* Normally they should be taken from database.
+	*/
+	private static final int CINEMA_SEATS_IN_A_ROW = 5;
+	private static final int CINEMA_ROWS = 5;
+	private static final double TICKET_PRICE = 30.0;
+	
 	private String id;
 	private String movieName;
 	private LocalDateTime time;
@@ -14,7 +23,7 @@ public class MovieShow {
 		this.movieName = movieName;
 		this.duration = duration;
 		this.time = time;
-		this.cinemaHall = new ModelFactory().createCinemaHall();
+		this.cinemaHall = new CinemaHall(CINEMA_ROWS, CINEMA_SEATS_IN_A_ROW, TICKET_PRICE);	
 	}
 
 	public String getId() {
