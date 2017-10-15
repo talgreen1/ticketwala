@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.ticketwala.command.api.Result;
 import com.ticketwala.model.MovieShow;
-import com.ticketwala.model.Seat;
 import com.ticketwala.service.api.TicketWalaService;
 
 public class TicketWalaServiceImpl implements TicketWalaService {
@@ -28,7 +27,7 @@ public class TicketWalaServiceImpl implements TicketWalaService {
 	}
 
 	@Override
-	public Result addSeatTicket(String orderId, Seat seat) {
+	public Result addSeatTicket(String orderId, int row, int seatNumber) {
 		// TODO Auto-generated method stub
 		return null;
 	}

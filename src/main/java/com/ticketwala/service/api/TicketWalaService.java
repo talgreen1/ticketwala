@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.ticketwala.command.api.Result;
 import com.ticketwala.model.MovieShow;
-import com.ticketwala.model.Seat;
 
 public interface TicketWalaService {
 	
@@ -36,7 +35,7 @@ public interface TicketWalaService {
 	 * @param orderId
 	 * @return Result
 	 */
-	Result addSeatTicket(String orderId, Seat seat);
+	Result addSeatTicket(String orderId, int row, int seatNumber);
 	
 	/**
 	 * Submit the given Order.
