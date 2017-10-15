@@ -45,6 +45,10 @@ public class MovieShow {
 	public CinemaHall getCinemaHall() {
 		return cinemaHall;
 	}
+
+	public double getTicketPrice() {
+		return TICKET_PRICE;
+	}
 	
 	@Override
 	public String toString() {
