@@ -9,6 +9,7 @@ import com.ticketwala.command.impl.EchoCommand;
 import com.ticketwala.command.impl.InvalidCommand;
 import com.ticketwala.command.impl.PrintAllMovieShowsCommand;
 import com.ticketwala.command.impl.PrintMovieShowCommand;
+import com.ticketwala.command.impl.PrintOrderStatusCommand;
 import com.ticketwala.command.impl.SubmitOrderCommand;
 import com.ticketwala.command.input.AddSeatCommandInput;
 import com.ticketwala.command.input.CreateOrderCommandInput;
@@ -44,6 +45,9 @@ public class CommandFactory {
 		case "submit-order":
 			orderId = commandArray.get(1);
 			result = new SubmitOrderCommand(orderId, tws);
+			break;
+		case "print-order":
+			result = new PrintOrderStatusCommand(commandArray.get(1), tws);
 			break;
 		case "print-movie-show":
 			movieShowId = commandArray.get(1);

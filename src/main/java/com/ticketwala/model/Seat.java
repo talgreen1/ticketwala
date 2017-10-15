@@ -43,4 +43,5 @@ public class Seat {
 		Seat otherSeat = (Seat)obj;
 		return this.row == otherSeat.row && this.seatNumber == otherSeat.seatNumber;
 	}
+
 }

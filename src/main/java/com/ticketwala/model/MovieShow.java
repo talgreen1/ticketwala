@@ -46,6 +46,10 @@ public class MovieShow {
 		return cinemaHall;
 	}
 	
+	public double getTicketPrice() {
+		return TICKET_PRICE;
+	}
+	
 	@Override
 	public String toString() {
 		return "MovieShow [id=" + id + ", movieName=" + movieName + ", time=" + time + ", duration=" + duration + "]";
