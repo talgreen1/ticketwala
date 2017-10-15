@@ -4,11 +4,12 @@ import java.util.List;
 
 import com.ticketwala.command.api.Command;
 import com.ticketwala.command.api.Result;
+import com.ticketwala.service.api.TicketWalaService;
 
 public class EchoCommand extends Command {
 
-	public EchoCommand(Object commandInput) {
-		super(commandInput);
+	public EchoCommand(Object commandInput, TicketWalaService tws) {
+		super(commandInput, tws);
 	}
 
 	@SuppressWarnings("unchecked")
