@@ -13,7 +13,6 @@ import com.ticketwala.dao.api.DataAccessService;
 import com.ticketwala.dao.impl.DataAccessServiceImpl;
 import com.ticketwala.model.MovieShow;
 import com.ticketwala.model.Order;
-import com.ticketwala.model.Seat;
 import com.ticketwala.service.api.TicketWalaService;
 import com.ticketwala.service.impl.TicketWalaServiceImpl;
 
@@ -71,18 +70,14 @@ public class TicketWalaServiceTest {
 		Order order = this.tws.getOrder(orderId);
 		Assert.assertNotNull(order);
 
-		MovieShow movieShow = order.getMovieShow();
-
-		Seat seat = movieShow.getCinemaHall().getSeat(1, 1);
-		Result addSeatResult = this.tws.addSeatTicket(orderId, seat);
+		Result addSeatResult = this.tws.addSeatTicket(orderId, 1, 1);
 
 		System.out.println(addSeatResult.getMessage());
 
 		Assert.assertTrue(addSeatResult.isSuccess());
 
 		// Test that adding the same seat to order fails
-		seat = movieShow.getCinemaHall().getSeat(1, 1);
-		addSeatResult = this.tws.addSeatTicket(orderId, seat);
+		addSeatResult = this.tws.addSeatTicket(orderId, 1, 1);
 		Assert.assertFalse(addSeatResult.isSuccess());
 
 		System.out.println(addSeatResult.getMessage());
@@ -103,11 +98,9 @@ public class TicketWalaServiceTest {
 		Order order = this.tws.getOrder(orderId);
 		Assert.assertNotNull(order);
 		
-		MovieShow movieShow = order.getMovieShow();
 		
 		//Add Seat to Order and Test
-		Seat seat = movieShow.getCinemaHall().getSeat(1, 1);
-		Result addSeatResult = this.tws.addSeatTicket(orderId, seat);
+		Result addSeatResult = this.tws.addSeatTicket(orderId, 1, 1);
 		System.out.println(addSeatResult.getMessage());
 		Assert.assertTrue(addSeatResult.isSuccess());
 
@@ -125,8 +118,7 @@ public class TicketWalaServiceTest {
 		Assert.assertNotNull(order); //Order Created Successfully
 		
 		//Add Seat to Order and Test - Should Fail because same seat was already ordered.
-		seat = movieShow.getCinemaHall().getSeat(1, 1);
-		addSeatResult = this.tws.addSeatTicket(orderId, seat);
+		addSeatResult = this.tws.addSeatTicket(orderId, 1, 1);
 		System.out.println(addSeatResult.getMessage());
 		Assert.assertFalse(addSeatResult.isSuccess());
 
@@ -154,10 +146,10 @@ public class TicketWalaServiceTest {
 
 		String orderId = tws.createOrder("12345").getMessage();
 		
-		Assert.assertTrue(tws.addSeatTicket(orderId, m.getCinemaHall().getSeat(0, 0)).isSuccess());
-		Assert.assertTrue(tws.addSeatTicket(orderId, m.getCinemaHall().getSeat(0, 1)).isSuccess());;
-		Assert.assertTrue(tws.addSeatTicket(orderId, m.getCinemaHall().getSeat(1, 0)).isSuccess());;
-		Assert.assertTrue(tws.addSeatTicket(orderId, m.getCinemaHall().getSeat(1, 1)).isSuccess());;
+		Assert.assertTrue(tws.addSeatTicket(orderId, 0, 0).isSuccess());
+		Assert.assertTrue(tws.addSeatTicket(orderId, 0, 1).isSuccess());;
+		Assert.assertTrue(tws.addSeatTicket(orderId, 1, 0).isSuccess());;
+		Assert.assertTrue(tws.addSeatTicket(orderId, 1, 1).isSuccess());;
 		
 		tws.submitOrder(orderId);
 		
@@ -167,7 +159,7 @@ public class TicketWalaServiceTest {
 		System.out.println(m.getCinemaHall());
 		
 		orderId = tws.createOrder("12345").getMessage();
-		Assert.assertFalse(tws.addSeatTicket(orderId, m.getCinemaHall().getSeat(0, 0)).isSuccess());
+		Assert.assertFalse(tws.addSeatTicket(orderId, 0, 0).isSuccess());
 
 	}
 	

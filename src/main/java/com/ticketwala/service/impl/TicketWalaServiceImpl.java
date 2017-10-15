@@ -46,12 +46,19 @@ public class TicketWalaServiceImpl implements TicketWalaService {
 	}
 
 	@Override
-	public Result addSeatTicket(String orderId, Seat seat) {
-		Result res = new Result(false, "Failed to add seat " + seat + " to order " + orderId + ". Seat already ordered?");
+	public Result addSeatTicket(String orderId, int row, int seatNumber) {
+		//Extract existing order (should check whether order is found and return error result if not).
 		Order order = this.orders.get(orderId);
-		boolean success = order.addSeat(seat);
+		
+		//create Seat Ticket
+		Seat seatToOrder = new Seat(row, seatNumber, order.getMovieShow().getTicketPrice());
+		
+		//Add Seat Ticket to Order
+		boolean success = order.addSeat(seatToOrder);
+
+		Result res = new Result(false, "Failed to add seat " + seatToOrder + " to order " + orderId + ". Seat already ordered?");
 		if (success) {
-			res = new Result(true, "Added seat " + seat + " to order " + orderId);
+			res = new Result(true, "Added seat " + seatToOrder + " to order " + orderId);
 		}
 		return res;
 	}
