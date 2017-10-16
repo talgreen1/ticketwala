@@ -6,8 +6,8 @@ import com.ticketwala.service.api.TicketWalaService;
 
 public class InvalidCommand extends Command {
 
-	public InvalidCommand(TicketWalaService service, Object commandInput) {
-		super(service, commandInput);
+	public InvalidCommand(Object commandInput, TicketWalaService tws) {
+		super(commandInput, tws);
 	}
 
 	@Override

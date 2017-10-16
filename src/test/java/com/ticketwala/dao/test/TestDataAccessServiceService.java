@@ -1,4 +1,4 @@
-package com.ticketwala.service.test;
+package com.ticketwala.dao.test;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -10,16 +10,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ticketwala.command.api.Result;
+import com.ticketwala.dao.api.DataAccessService;
+import com.ticketwala.dao.impl.DataAccessServiceImpl;
 import com.ticketwala.model.MovieShow;
-import com.ticketwala.service.api.TicketWalaService;
-import com.ticketwala.service.impl.TicketWalaServiceImpl;
 
-public class TestMovieShowsService {
-	private TicketWalaService movieShowService = null;
+public class TestDataAccessServiceService {
+	private DataAccessService dataAccessService = null;
 	
-	public TestMovieShowsService() {
-		this.movieShowService = new TicketWalaServiceImpl();
-		this.movieShowService.deleteAllMovieShows();
+	public TestDataAccessServiceService() {
+		this.dataAccessService = new DataAccessServiceImpl();
+		this.dataAccessService.deleteAllMovieShows();
 	}
 	
 	@Before
@@ -38,12 +38,12 @@ public class TestMovieShowsService {
 		
 		String id = UUID.randomUUID().toString();
 		MovieShow movieShow = new MovieShow(id, "Big Lebowsky", ldt, duration);
-		Result res = this.movieShowService.addMovieShow(movieShow);
+		Result res = this.dataAccessService.createMovieShow(movieShow);
 		
 		System.out.println(res);
 		Assert.assertTrue(res != null && res.isSuccess());
 		
-		movieShow = this.movieShowService.getMovieShow(id);
+		movieShow = this.dataAccessService.findMovieShow(id);
 		Assert.assertTrue(movieShow != null);
 		Assert.assertTrue(movieShow.getId().equals(id));
 	}
@@ -53,17 +53,17 @@ public class TestMovieShowsService {
 		LocalDateTime ldt = LocalDateTime.of(2016, 10, 1, 20, 30);
 		int duration = 90;
 		
-		HashMap<String, MovieShow> movieShows = this.movieShowService.getMovieShows();
+		HashMap<String, MovieShow> movieShows = this.dataAccessService.getAllMovieShows();
 		int sizeBefore = movieShows.size();
 		
 		MovieShow movieShow = new MovieShow("1", "movie1", ldt, duration);
-		Result res = this.movieShowService.addMovieShow(movieShow);
+		Result res = this.dataAccessService.createMovieShow(movieShow);
 		Assert.assertTrue(res != null && res.isSuccess());
 		MovieShow movieShow1 = new MovieShow("2", "movie2", ldt, duration);
-		res = this.movieShowService.addMovieShow(movieShow1);
+		res = this.dataAccessService.createMovieShow(movieShow1);
 		Assert.assertTrue(res != null && res.isSuccess());
 		
-		movieShows = this.movieShowService.getMovieShows();
+		movieShows = this.dataAccessService.getAllMovieShows();
 		
 		Assert.assertTrue(movieShows.size() == sizeBefore + 2);
 	}

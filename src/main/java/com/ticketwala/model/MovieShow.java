@@ -1,67 +1,57 @@
 package com.ticketwala.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
-import com.ticketwala.service.api.Configuration;
 
 public class MovieShow {
-	private String name;
-	private CinemaHall cinemaHall;
-	private int duration;
+	
+	/**
+	 * These constants are here for simplicity.
+	 * Normally they should be taken from database.
+	 */
+	private static final int CINEMA_SEATS_IN_A_ROW = 5;
+	private static final int CINEMA_ROWS = 5;
+	private static final double TICKET_PRICE = 30.0;
+	
 	private String id;
-	
+	private String movieName;
 	private LocalDateTime time;
+	private int duration;
+	private CinemaHall cinemaHall;
 	
-	public MovieShow(String id, String name, LocalDateTime time, int duration) {
+	public MovieShow(String id, String movieName, LocalDateTime time, int duration) {
 		this.id = id;
-		this.name = name;
+		this.movieName = movieName;
 		this.duration = duration;
 		this.time = time;
-		this.cinemaHall = new CinemaHall(Configuration.CINEMA_ROWS, Configuration.CINEMA_SEATS_IN_ROW, Configuration.SEAT_PRICE);
-	}
-	
-	public CinemaHall getCinemaHall() {
-		return cinemaHall;
+		this.cinemaHall = new CinemaHall(CINEMA_ROWS, CINEMA_SEATS_IN_A_ROW, TICKET_PRICE);
 	}
 
-	public String getName() {
-		return name;
-	}
-	
-	public int getSeatsSold() {
-		return this.cinemaHall.getSize() - this.cinemaHall.countAvailableSeats();
+	public String getId() {
+		return id;
 	}
 
-	public double getTicketPrice() {
-		return Configuration.SEAT_PRICE;
+	public String getMovieName() {
+		return movieName;
 	}
 
-	public void commitOrder(Order order) {
-		List<Seat> seats = order.getSeats();
-		for (Seat seat : seats) {
-			this.getCinemaHall().getSeatsArray()[seat.getRow()][seat.getSeat()].setSold(true);
-		}
+	public LocalDateTime getTime() {
+		return time;
 	}
-	
-	public int getAvailableSeats() {
-		return this.getCinemaHall().countAvailableSeats();
-	}
-	
+
 	public int getDuration() {
 		return duration;
 	}
+
+	public CinemaHall getCinemaHall() {
+		return cinemaHall;
+	}
 	
-	public LocalDateTime getTime() {
-		return time;
+	public double getTicketPrice() {
+		return TICKET_PRICE;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("{ name : %s, date : %s, duration : %d }", this.name, this.time.toString(), this.duration);
-	}
-
-	public String getId() {
-		return this.id;
+		return "MovieShow [id=" + id + ", movieName=" + movieName + ", time=" + time + ", duration=" + duration + "]";
 	}
 }

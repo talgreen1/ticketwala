@@ -7,38 +7,37 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import com.ticketwala.command.api.Result;
-import com.ticketwala.dao.api.MovieShowDao;
+import com.ticketwala.dao.api.DataAccessService;
 import com.ticketwala.model.MovieShow;
 import com.ticketwala.model.Order;
 import com.ticketwala.model.Seat;
-import com.ticketwala.service.api.Configuration;
 
-public class MovieShowDaoImpl implements MovieShowDao {
+public class DataAccessServiceImpl implements DataAccessService {
 
 	private static final String MOVIESHOW_ROOT = "/movieshow";
 	Preferences root = Preferences.userRoot();
 	
 	@Override
-	public Result createMovieShow(MovieShow m) {		
+	public Result createMovieShow(MovieShow movieShow) {		
 		//Storing movie
-		System.out.println("Storing Movie -> " + m);
-		String filmNode = MOVIESHOW_ROOT + "/" + m.getId();
+		System.out.println("Storing Movie -> " + movieShow);
+		String filmNode = MOVIESHOW_ROOT + "/" + movieShow.getId();
 		Preferences node = root.node(filmNode);
 		
 		String movieShowName = node.get("name", null);
 		if (movieShowName != null) {
-			return new Result(false, "Movie with ID " + m.getId() + " already exist!");
+			return new Result(false, "Movie with ID " + movieShow.getId() + " already exist!");
 		}
 		
-		node.put("name", m.getName());
-		node.put("time", m.getTime().toString());
-		node.putInt("duration", m.getDuration());
+		node.put("name", movieShow.getMovieName());
+		node.put("time", movieShow.getTime().toString());
+		node.putInt("duration", movieShow.getDuration());
 		
-		return new Result(true, "Movie " + m + " Created Successfully");
+		return new Result(true, "Movie " + movieShow + " Created Successfully");
 	}
 
 	@Override
-	public MovieShow fetchMovieShow(String id) {
+	public MovieShow findMovieShow(String id) {
 		String movieNode = MOVIESHOW_ROOT + "/" + id;
 		Preferences node = root.node(movieNode);
 		
@@ -50,7 +49,6 @@ public class MovieShowDaoImpl implements MovieShowDao {
 		LocalDateTime ldt = LocalDateTime.parse(node.get("time", null));
 		int duration = node.getInt("duration", 0);
 		MovieShow m = new MovieShow(id, movieShowName, ldt, duration);
-		Seat[][] seats = m.getCinemaHall().getSeats();
 		String[] takenSits = node.get("taken_seats", "").split("[,]");
 		
 		for (int i = 0; i < takenSits.length; i++) {
@@ -59,46 +57,46 @@ public class MovieShowDaoImpl implements MovieShowDao {
 			}
 			int row = Integer.parseInt(takenSits[i]);
 			int seat = Integer.parseInt(takenSits[i+1]);
-			seats[row][seat] = new Seat(row, seat, Configuration.SEAT_PRICE);
-			seats[row][seat].setSold(true);
+			Seat s = m.getCinemaHall().getSeat(row, seat);
+			s.setSold(true);
 			i++;
 		}
 		return m;
 	}
 
 	@Override
-	public Result deleteMovieShow(String id) {
-		String movieNode = MOVIESHOW_ROOT + "/" + id;
+	public Result deleteMovieShow(String movieShowId) {
+		String movieNode = MOVIESHOW_ROOT + "/" + movieShowId;
 		Preferences node = root.node(movieNode);
 		try {
 			node.removeNode();
 		} catch (BackingStoreException e) {
-			return new Result(false, "Failed to delete movie show " + id);
+			return new Result(false, "Failed to delete movie show " + movieShowId);
 		}
 		return new Result(true, "OK");
 	}
 
 	@Override
-	public Result updateMovieShow(String id, MovieShow m) {
+	public Result updateMovieShow(MovieShow movieShow) {
 		//Storing movie
-		System.out.println("Updating Movie -> " + m);
-		String movieNode = MOVIESHOW_ROOT + "/" + m.getId();
+		System.out.println("Updating Movie -> " + movieShow);
+		String movieNode = MOVIESHOW_ROOT + "/" + movieShow.getId();
 		Preferences node = root.node(movieNode);
 		
 		String movieShowName = node.get("name", null);
 		if (movieShowName == null) {
-			return new Result(false, "Movie with ID " + m.getId() + " does not exist!");
+			return new Result(false, "Movie with ID " + movieShow.getId() + " does not exist!");
 		}
 		
-		node.put("name", m.getName());
-		node.put("time", m.getTime().toString());
-		node.putInt("duration", m.getDuration());
+		node.put("name", movieShow.getMovieName());
+		node.put("time", movieShow.getTime().toString());
+		node.putInt("duration", movieShow.getDuration());
 		
-		return new Result(true, "Movie " + m + " Created Successfully");
+		return new Result(true, "Movie " + movieShow + " Created Successfully");
 	}
 
 	@Override
-	public HashMap<String, MovieShow> fetchAll() {
+	public HashMap<String, MovieShow> getAllMovieShows() {
 		String moviesRoot = MOVIESHOW_ROOT;
 		Preferences moviesRootNode = root.node(moviesRoot);
 		HashMap<String, MovieShow> res = new HashMap<String, MovieShow>();
@@ -106,7 +104,7 @@ public class MovieShowDaoImpl implements MovieShowDao {
 		try {
 			String[] movieShowNames = moviesRootNode.childrenNames();
 			Arrays.stream(movieShowNames).forEach( (m) -> {
-				res.put(m, this.fetchMovieShow(m));
+				res.put(m, this.findMovieShow(m));
 			});
 			
 		} catch (BackingStoreException e) {
@@ -116,18 +114,19 @@ public class MovieShowDaoImpl implements MovieShowDao {
 	}
 
 	@Override
-	public void deleteAll() {
+	public Result deleteAllMovieShows() {
 		String moviesRoot = MOVIESHOW_ROOT;
 		Preferences moviesRootNode = root.node(moviesRoot);
 		try {
 			moviesRootNode.removeNode();
 		} catch (BackingStoreException e) {
-			e.printStackTrace();
+			return new Result(false, "Error when trying to delete all movies. " + e.getMessage());
 		}
+		return new Result(true, "OK");
 	}
 	
 	@Override
-	public void commitOrder(Order order) {
+	public Result commitOrder(Order order) {
 		String movieNode = MOVIESHOW_ROOT + "/" + order.getMovieShow().getId();
 		Preferences node = root.node(movieNode);
 		
@@ -135,18 +134,13 @@ public class MovieShowDaoImpl implements MovieShowDao {
 		StringBuilder sb = new StringBuilder(takenSeats);
 		order.getSeats().stream().forEach((seat) -> {
 			if (sb.length() == 0) {
-				sb.append((seat.getRow() + "," + seat.getSeat()));
+				sb.append((seat.getRow() + "," + seat.getSeatNumber()));
 			} else {
-				sb.append("," + seat.getRow() + "," + seat.getSeat());
+				sb.append("," + seat.getRow() + "," + seat.getSeatNumber());
 			}
 		});
 		node.put("taken_seats", sb.toString());
+		return new Result(true, "OK");
 	}
-
-	public static void main(String[] args) throws BackingStoreException {
-		String movieNode = MOVIESHOW_ROOT + "/" + "4dd4f";
-		Preferences node = Preferences.userRoot().node(movieNode);
-//		node.removeNode();
-		System.out.println(node.get("taken_seats", ""));
-	}
+	
 }
