@@ -22,9 +22,9 @@ public class TicketWalaStarter {
 		System.out.println("> create-order [show-id]");
 		System.out.println("> add-seat [orderId] [row] [seat]");
 		System.out.println("> submit-order [orderId]");
+		System.out.println("> print-order [orderId]");
 		System.out.println("> print-movie-show [showId]");
 		System.out.println("> print-all-movie-shows");
-//		System.out.println("> print-order [orderId]");
 		
 		CommandFactory commandFactory = new CommandFactory();
 		
