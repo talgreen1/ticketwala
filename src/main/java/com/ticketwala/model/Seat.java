@@ -2,15 +2,23 @@ package com.ticketwala.model;
 
 public class Seat {
 	private int row;
-	private int seatNumber;
+	private int seat;
 	private boolean sold;
 	private double price;
-	
-	public Seat(int row, int seatNumber, double price) {
+
+	public Seat(int row, int seat, double price) {
 		this.row = row;
-		this.seatNumber = seatNumber;
+		this.seat = seat;
 		this.sold = false;
 		this.price = price;
+	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public int getSeat() {
+		return seat;
 	}
 
 	public boolean isSold() {
@@ -20,13 +28,14 @@ public class Seat {
 	public void setSold(boolean sold) {
 		this.sold = sold;
 	}
-
-	public int getRow() {
-		return row;
+	
+	@Override
+	public String toString() {
+		return sold ? "X" : "-";
 	}
 
-	public int getSeatNumber() {
-		return seatNumber;
+	public String toString2() {
+		return String.format("{ row : %d, seat : %d, price : %f }", row+1, seat+1, price);
 	}
 
 	public double getPrice() {
@@ -34,14 +43,8 @@ public class Seat {
 	}
 
 	@Override
-	public String toString() {
-		return "Seat [row=" + row + ", seatNumber=" + seatNumber + ", sold=" + sold + ", price=" + price + "]";
-	}
-	
-	@Override
 	public boolean equals(Object obj) {
-		Seat otherSeat = (Seat)obj;
-		return this.row == otherSeat.row && this.seatNumber == otherSeat.seatNumber;
+		Seat otherSeat = (Seat) obj;
+		return this.row == otherSeat.row && this.seat == otherSeat.seat;
 	}
-
 }

@@ -4,63 +4,65 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ticketwala.command.impl.AddSeatCommand;
+import com.ticketwala.command.impl.CreateMovieShowCommand;
 import com.ticketwala.command.impl.CreateOrderCommand;
-import com.ticketwala.command.impl.EchoCommand;
+import com.ticketwala.command.impl.DeleteMovieShowCommand;
 import com.ticketwala.command.impl.InvalidCommand;
-import com.ticketwala.command.impl.PrintAllMovieShowsCommand;
-import com.ticketwala.command.impl.PrintMovieShowCommand;
-import com.ticketwala.command.impl.PrintOrderStatusCommand;
+import com.ticketwala.command.impl.ListMovieShowsCommand;
+import com.ticketwala.command.impl.PrintOrderCommand;
+import com.ticketwala.command.impl.PrintShowCommand;
 import com.ticketwala.command.impl.SubmitOrderCommand;
 import com.ticketwala.command.input.AddSeatCommandInput;
-import com.ticketwala.command.input.CreateOrderCommandInput;
+import com.ticketwala.command.input.CreateMovieShowInput;
+import com.ticketwala.command.input.CreateOrderInput;
 import com.ticketwala.service.api.TicketWalaService;
 
 public class CommandFactory {
-	public Command createCommand(TicketWalaService tws, String commandLine) {
+	public Command createCommand(TicketWalaService service, String commandLine) {
 		Command result = null;
 		
-		//Split command line on white spaces of any size
+		//Split command line on spaces
 		List<String> commandArray = Arrays.asList(commandLine.trim().split("\\s+"));
 		
 		String name = commandArray.get(0);
 		
-		String movieShowId;
-		String orderId;
-		int seatRow;
-		int seatNumber;
-		
 		switch (name) {
 		case "create-order":
-			movieShowId = commandArray.get(1);
-			CreateOrderCommandInput coi = new CreateOrderCommandInput(movieShowId);
-			result = new CreateOrderCommand(coi, tws);
+			CreateOrderInput coi = new CreateOrderInput();
+			coi.setShowId(commandArray.get(1));
+			result = new CreateOrderCommand(service, coi);
 			break;
 		case "add-seat":
-			orderId = commandArray.get(1);
-			seatRow = Integer.parseInt(commandArray.get(2));
-			seatNumber = Integer.parseInt(commandArray.get(3));
-			AddSeatCommandInput asi = new AddSeatCommandInput(orderId, seatRow, seatNumber);
-			result = new AddSeatCommand(asi, tws);
+			AddSeatCommandInput asci = new AddSeatCommandInput();
+			asci.setOrderId(commandArray.get(1));
+			asci.setRow(Integer.parseInt(commandArray.get(2)) - 1);
+			asci.setSeat(Integer.parseInt(commandArray.get(3)) - 1);
+			result = new AddSeatCommand(service, asci);
 			break;
 		case "submit-order":
-			orderId = commandArray.get(1);
-			result = new SubmitOrderCommand(orderId, tws);
+			result = new SubmitOrderCommand(service, commandArray.get(1));
 			break;
-		case "print-order":
-			result = new PrintOrderStatusCommand(commandArray.get(1), tws);
+		case "movie-show-status":
+			result = new PrintShowCommand(service, commandArray.get(1));
 			break;
-		case "print-movie-show":
-			movieShowId = commandArray.get(1);
-			result = new PrintMovieShowCommand(movieShowId, tws);
+		case "order-details":
+			result = new PrintOrderCommand(service, commandArray.get(1));
 			break;
-		case "print-all-movie-shows":
-			result = new PrintAllMovieShowsCommand(null, tws);
+		case "add-movie-show":
+			CreateMovieShowInput cmsi = new CreateMovieShowInput();
+			cmsi.setName(commandArray.get(1));
+			cmsi.setTime(commandArray.get(2));
+			cmsi.setDuration(Integer.parseInt(commandArray.get(3)));			
+			result = new CreateMovieShowCommand(service, cmsi);
 			break;
-		case "echo":
-			result = new EchoCommand(commandArray.subList(1, commandArray.size()), tws);
+		case "delete-movie-show":
+			result = new DeleteMovieShowCommand(service, commandArray.get(1));
+			break;
+		case "list-movie-shows":
+			result = new ListMovieShowsCommand(service, null);
 			break;
 		default:
-			result = new InvalidCommand(commandArray.subList(1, commandArray.size()), tws);
+			result = new InvalidCommand(service, null);
 			break;
 		}
 		
