@@ -36,4 +36,11 @@ public class CinemaHall {
         this.seatsArray[seat.getRow()][seat.getSeatNumber()] = seat;
     }
 
+	public Seat[][] getSeatsArray() {
+		return seatsArray;
+	}
+
+	public double getSeatPrice() {
+		return seatPrice;
+	}
 }
