@@ -38,6 +38,13 @@ dependencies {
     testCompile("junit:junit")
 }
 
+test {
+    //we want display the following test events
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
+    }
+}
+
 //springBoot {
 //    mainClass = "com.att.ticketwala.startup.TicketWalaStarter"
 //}

@@ -5,12 +5,12 @@ import com.ticketwala.service.api.TicketWalaService;
 public abstract class Command {
 	
 	protected String name;
-	protected TicketWalaService ticketService;
 	protected Object commandInput;
+	protected TicketWalaService ticketWalaService;
 	
-	public Command(TicketWalaService service, Object commandInput) {
+	public Command(Object commandInput, TicketWalaService tws) {
 		this.commandInput = commandInput;
-		this.ticketService = service;
+		this.ticketWalaService = tws;
 	}
 	
 	public abstract Result execute();
