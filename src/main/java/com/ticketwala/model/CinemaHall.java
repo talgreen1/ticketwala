@@ -2,14 +2,12 @@ package com.ticketwala.model;
 
 public class CinemaHall {
 	private Seat[][] seatsArray;
-	private double seatPrice;
 	
 	public CinemaHall(int rows, int seats, double seatPrice) {
 		this.seatsArray = new Seat[rows][seats];
-		this.seatPrice = seatPrice;
 		for (int i = 0; i < seatsArray.length; i++) {
 			for (int j = 0; j < seatsArray[i].length; j++) {
-				seatsArray[i][j] = new Seat(i, j, this.seatPrice);
+				seatsArray[i][j] = new Seat(i, j, seatPrice);
 			}
 		}
 	}
@@ -38,9 +36,5 @@ public class CinemaHall {
 
 	public Seat[][] getSeatsArray() {
 		return seatsArray;
-	}
-
-	public double getSeatPrice() {
-		return seatPrice;
 	}
 }
