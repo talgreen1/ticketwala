@@ -71,4 +71,9 @@ public interface TicketWalaService {
 	 * @return
 	 */
 	Order getOrder(String orderId);
+	
+	/**
+	 * Delete all movie Shows
+	 */
+	Result deleteAllMovieShows();
 }

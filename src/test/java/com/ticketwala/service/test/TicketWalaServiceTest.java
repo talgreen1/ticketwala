@@ -2,6 +2,7 @@ package com.ticketwala.service.test;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -125,41 +126,30 @@ public class TicketWalaServiceTest {
 
 	}
 
+	@Test
+	public void testGetMovieShow(){
+		prepareDatabase();
+		Assert.assertTrue(this.tws.getMovieShow("12346").getId().equals("12346"));
+	}
+	
+	@Test
+	public void testGetMovieShows(){
+		prepareDatabase();
+		List<MovieShow> movieShows = this.tws.getMovieShows();
+		Assert.assertTrue(movieShows.stream().map((ms) -> ms.getId()).collect(Collectors.toList()).contains("12345"));
+	}
+	
+	@Test
+	public void testPostMovieShow() {
+		prepareDatabase();
+		Assert.assertTrue(this.tws.addMovieShow(new MovieShow("12347", "Chipopo", LocalDateTime.now(), 120)).isSuccess());
+	}
+	
 	private void prepareDatabase() {
 		DataAccessService das = new DataAccessServiceImpl();
 		das.deleteAllMovieShows();
 		das.createMovieShow(new MovieShow("12345", "Star Wars III", LocalDateTime.now(), 120));
 		das.createMovieShow(new MovieShow("12346", "Star Wars V", LocalDateTime.now(), 120));
-	}
-	
-	public static void main(String[] args) {
-		DataAccessService das = new DataAccessServiceImpl();
-		das.deleteAllMovieShows();
-		das.createMovieShow(new MovieShow("12345", "Star Wars III", LocalDateTime.now(), 120));
-		
-		TicketWalaService tws = new TicketWalaServiceImpl();
-		MovieShow m = das.findMovieShow("12345");
-		System.out.println("Before:");
-		System.out.println(m);
-		System.out.println(m.getCinemaHall());
-
-		String orderId = tws.createOrder("12345").getMessage();
-		
-		Assert.assertTrue(tws.addSeatTicket(orderId, 0, 0).isSuccess());
-		Assert.assertTrue(tws.addSeatTicket(orderId, 0, 1).isSuccess());;
-		Assert.assertTrue(tws.addSeatTicket(orderId, 1, 0).isSuccess());;
-		Assert.assertTrue(tws.addSeatTicket(orderId, 1, 1).isSuccess());;
-		
-		tws.submitOrder(orderId);
-		
-		m = das.findMovieShow("12345");
-		System.out.println("After:");
-		System.out.println(m);
-		System.out.println(m.getCinemaHall());
-		
-		orderId = tws.createOrder("12345").getMessage();
-		Assert.assertFalse(tws.addSeatTicket(orderId, 0, 0).isSuccess());
-
 	}
 	
 }
