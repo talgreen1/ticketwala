@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
 import com.ticketwala.command.api.Result;
 import com.ticketwala.dao.api.DataAccessService;
 import com.ticketwala.dao.impl.DataAccessServiceImpl;
@@ -13,6 +15,7 @@ import com.ticketwala.model.Order;
 import com.ticketwala.model.Seat;
 import com.ticketwala.service.api.TicketWalaService;
 
+@Service
 public class TicketWalaServiceImpl implements TicketWalaService {
 	
 	private DataAccessService das = null;
@@ -71,14 +74,17 @@ public class TicketWalaServiceImpl implements TicketWalaService {
 
 	@Override
 	public Result addMovieShow(MovieShow movieShow) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.das.createMovieShow(movieShow);
 	}
 
 	@Override
 	public Result deleteMovieShow(String showId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.das.deleteMovieShow(showId);
+	}
+
+	@Override
+	public Result deleteAllMovieShows() {
+		return this.das.deleteAllMovieShows();
 	}
 
 	@Override
@@ -89,4 +95,5 @@ public class TicketWalaServiceImpl implements TicketWalaService {
 	public String generateId() {
 		return UUID.randomUUID().toString().substring(0, 5);
 	}
+
 }
