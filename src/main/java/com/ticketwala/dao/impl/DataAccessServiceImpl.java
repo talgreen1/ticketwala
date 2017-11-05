@@ -16,36 +16,60 @@ public class DataAccessServiceImpl implements DataAccessService {
 
 	private static final String MOVIESHOW_ROOT = "/movieshow";
 	Preferences root = Preferences.userRoot();
-	
+	Preferences moviesRoot = root.node(MOVIESHOW_ROOT);
+
 	@Override
 	public Result createMovieShow(MovieShow movieShow) {		
 		//Storing movie
 		System.out.println("Storing Movie -> " + movieShow);
 		String filmNode = MOVIESHOW_ROOT + "/" + movieShow.getId();
-		Preferences node = root.node(filmNode);
 		
-		String movieShowName = node.get("name", null);
-		if (movieShowName != null) {
+		MovieShow ms = this.findMovieShow(movieShow.getId());
+		if (ms != null) {
 			return new Result(false, "Movie with ID " + movieShow.getId() + " already exist!");
 		}
 		
+		//Create the new Movie Nodes
+		Preferences node = root.node(filmNode);
 		node.put("name", movieShow.getMovieName());
 		node.put("time", movieShow.getTime().toString());
 		node.putInt("duration", movieShow.getDuration());
-		
+		flushChanges(node);
 		return new Result(true, "Movie " + movieShow + " Created Successfully");
+	}
+
+	private void flushChanges(Preferences node) {
+		try {
+			node.flush();
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public MovieShow findMovieShow(String id) {
 		String movieNode = MOVIESHOW_ROOT + "/" + id;
-		Preferences node = root.node(movieNode);
+		
+		//Check if root of movies or movie root node exist
+		Preferences node = null;
+		try {
+			if (!root.nodeExists(MOVIESHOW_ROOT)) {
+				return null;
+			} else if (root.nodeExists(movieNode)) {
+				node = root.node(movieNode);
+			} else {
+				return null;
+			}
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+			return null;
+		}
 		
 		String movieShowName = node.get("name", null);
 		if (movieShowName == null) {
 			return null;
 		}
-		
+
 		LocalDateTime ldt = LocalDateTime.parse(node.get("time", null));
 		int duration = node.getInt("duration", 0);
 		MovieShow m = new MovieShow(id, movieShowName, ldt, duration);
@@ -70,6 +94,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 		Preferences node = root.node(movieNode);
 		try {
 			node.removeNode();
+			node.flush();
 		} catch (BackingStoreException e) {
 			return new Result(false, "Failed to delete movie show " + movieShowId);
 		}
@@ -91,22 +116,24 @@ public class DataAccessServiceImpl implements DataAccessService {
 		node.put("name", movieShow.getMovieName());
 		node.put("time", movieShow.getTime().toString());
 		node.putInt("duration", movieShow.getDuration());
-		
+		flushChanges(node);
 		return new Result(true, "Movie " + movieShow + " Created Successfully");
 	}
 
 	@Override
 	public HashMap<String, MovieShow> getAllMovieShows() {
 		String moviesRoot = MOVIESHOW_ROOT;
-		Preferences moviesRootNode = root.node(moviesRoot);
 		HashMap<String, MovieShow> res = new HashMap<String, MovieShow>();
 		
 		try {
-			String[] movieShowNames = moviesRootNode.childrenNames();
-			Arrays.stream(movieShowNames).forEach( (m) -> {
-				res.put(m, this.findMovieShow(m));
-			});
-			
+			boolean nodeExists = root.nodeExists(moviesRoot);
+			if (nodeExists) {
+				Preferences moviesRootNode = root.node(moviesRoot);
+				String[] movieShowNames = moviesRootNode.childrenNames();
+				Arrays.stream(movieShowNames).forEach( (m) -> {
+					res.put(m, this.findMovieShow(m));
+				});
+			} 
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
 		}
@@ -119,6 +146,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 		Preferences moviesRootNode = root.node(moviesRoot);
 		try {
 			moviesRootNode.removeNode();
+			moviesRootNode.flush();
 		} catch (BackingStoreException e) {
 			return new Result(false, "Error when trying to delete all movies. " + e.getMessage());
 		}
@@ -140,7 +168,73 @@ public class DataAccessServiceImpl implements DataAccessService {
 			}
 		});
 		node.put("taken_seats", sb.toString());
+		flushChanges(node);
 		return new Result(true, "OK");
 	}
+	
+	
+	public static void main(String[] args) throws BackingStoreException {
+
+		Preferences root = Preferences.userRoot();
+
+		try {
+			System.out.println(root.absolutePath());
+			printStrArray(root.childrenNames());
+			
+			String screeningNodePath = "/screening";
+			String movie1Path = screeningNodePath + "/movie1";
+			
+			Preferences screeningNode = null;
+			Preferences movieNode = null;
+			
+			//Screening Node
+			if (!root.nodeExists(screeningNodePath)) {
+				System.out.println("screening node does not exist. Creating...");
+				screeningNode = root.node(screeningNodePath);
+			} else {
+				System.out.println("screening node exists");
+				screeningNode = root.node(screeningNodePath);
+			}
+			
+			//Movie Node
+			String movieName = "movie1";
+			if (!screeningNode.nodeExists(movieName)) {
+				System.out.println("movie node does not exist. Creating...");
+				movieNode = screeningNode.node(movieName);
+			} else {
+				System.out.println("movie node exists");
+				movieNode = screeningNode.node(movieName);
+			}
+
+			if (!screeningNode.nodeExists("/screening/movie1")) {
+				System.out.println("-- movie1 node does not exist.");
+			} else {
+				System.out.println("-- movie1 node exist.");
+			}
+
+			if (!screeningNode.nodeExists("/screening/movie1/name")) {
+				System.out.println("-- movie1.name node does not exist.");
+			} else {
+				System.out.println("-- movie1.name node exist.");
+			}
+			
+			
+//			movieNode.put("name", "movie1");
+//			String s = root.node("screening").toString();
+//			printStrArray(screeningNode.childrenNames());
+//			
+//			System.out.println(s);
+			
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+
+	private static void printStrArray(String[] arr) throws BackingStoreException {
+		Arrays.asList(arr).stream().forEach((s) -> System.out.println(s));
+	}
+	
 	
 }
