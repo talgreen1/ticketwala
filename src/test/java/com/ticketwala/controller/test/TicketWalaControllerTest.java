@@ -1,19 +1,27 @@
 package com.ticketwala.controller.test;
 
-import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
+import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 
 import java.time.LocalDateTime;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import com.ticketwala.TicketWalaWebApplication;
 import com.ticketwala.dao.api.DataAccessService;
 import com.ticketwala.dao.impl.DataAccessServiceImpl;
 import com.ticketwala.model.MovieShow;
 
-
+@RunWith(SpringRunner.class)
+@SpringBootTest(
+		  webEnvironment = WebEnvironment.DEFINED_PORT,
+		  classes = TicketWalaWebApplication.class)
 public class TicketWalaControllerTest {
 
 	private void prepareDatabase() {
