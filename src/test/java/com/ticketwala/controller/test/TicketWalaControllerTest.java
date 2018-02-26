@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.ticketwala.TicketWalaWebApplication;
+import com.ticketwala.command.input.CreateMovieShowInput;
 import com.ticketwala.dao.api.DataAccessService;
 import com.ticketwala.dao.impl.DataAccessServiceImpl;
 import com.ticketwala.model.MovieShow;
@@ -47,16 +48,13 @@ public class TicketWalaControllerTest {
 	}
 	
 	@Test
-	public void testPostMovieShow() {
+	public void testCreateMovieShow() {
+		CreateMovieShowInput movieShow = new CreateMovieShowInput("Superman", 87, "2017-12-31T18:09");
 		prepareDatabase();
 		given().
 		contentType("application/json").
-		body("{	\"name\" : \"Superman\", \"duration\" : 87, \"time\" : \"2017-12-31T18:09\"}").
+		body(movieShow).
 		when().post("/movie_show").then().assertThat().statusCode(201);
 	}
-	
-	public static void main(String[] args) {
-		LocalDateTime ldt = LocalDateTime.parse("2017-10-20T02:23:49.592");
-		System.out.println(ldt);
-	}
+
 }

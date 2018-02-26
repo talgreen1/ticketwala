@@ -5,9 +5,21 @@ public class CreateMovieShowInput {
 	private int duration;
 	private String time;
 	
+	public CreateMovieShowInput() {
+		//Empty
+	}
+
+	public CreateMovieShowInput(String name, int duration, String time) {
+		super();
+		this.name = name;
+		this.duration = duration;
+		this.time = time;
+	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
