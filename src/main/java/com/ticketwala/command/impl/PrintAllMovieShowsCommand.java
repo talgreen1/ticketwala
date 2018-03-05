@@ -16,8 +16,13 @@ public class PrintAllMovieShowsCommand extends Command {
 	@Override
 	public Result execute() {
 		List<MovieShow> ms = this.ticketWalaService.getMovieShows();
+		StringBuilder sb = new StringBuilder();
+		
 		if (ms != null)	{
-			return new Result(true, ms.toString());
+			for (MovieShow movieShow : ms) {
+				sb.append(movieShow).append('\n');
+			}
+			return new Result(true, sb.toString());
 		} else {
 			return new Result(false, "No Movie Shows found!");
 		}

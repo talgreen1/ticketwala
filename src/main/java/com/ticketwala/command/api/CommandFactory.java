@@ -57,6 +57,7 @@ public class CommandFactory {
 			result = new PrintAllMovieShowsCommand(null, tws);
 			break;
 		case "echo":
+		case "bye":
 			result = new EchoCommand(commandArray.subList(1, commandArray.size()), tws);
 			break;
 		default:
