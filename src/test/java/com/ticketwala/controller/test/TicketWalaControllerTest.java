@@ -35,7 +35,7 @@ public class TicketWalaControllerTest {
 	@Test
 	public void testGetMovieShow(){
 		prepareDatabase();
-		get("/movie_show/12345").
+		get("/movie_shows/12345").
 		then().
 		body("id", equalTo("12345")).and().body("movieName", equalTo("Star Wars III"));
 	}
@@ -54,7 +54,7 @@ public class TicketWalaControllerTest {
 		given().
 		contentType("application/json").
 		body(movieShow).
-		when().post("/movie_show").then().assertThat().statusCode(201);
+		when().post("/movie_shows").then().assertThat().statusCode(201);
 	}
 
 }

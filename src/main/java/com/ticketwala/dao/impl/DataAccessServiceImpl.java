@@ -171,9 +171,16 @@ public class DataAccessServiceImpl implements DataAccessService {
 		flushChanges(node);
 		return new Result(true, "OK");
 	}
-	
-	
-	public static void main(String[] args) throws BackingStoreException {
+
+
+	public static void main(String[] args) {
+		DataAccessService das = new DataAccessServiceImpl();
+
+
+		das.createMovieShow(new MovieShow("1", "Star trek", LocalDateTime.now(), 90));
+		das.createMovieShow(new MovieShow("2", "Harry Potter", LocalDateTime.now(), 120));
+	}
+	public static void main1(String[] args) throws BackingStoreException {
 
 		Preferences root = Preferences.userRoot();
 

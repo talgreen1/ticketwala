@@ -1,9 +1,12 @@
 buildscript {
+    ext {
+        springBootVersion = '2.0.6.RELEASE'
+    }
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
@@ -11,11 +14,10 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
-jar {
-    baseName = 'tickets-wala-spring-boot'
-    version =  '0.1.0'
-}
+group = 'com.app'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
@@ -25,19 +27,27 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
+
     // tag::jetty[]
-    compile("org.springframework.boot:spring-boot-starter-web") {
+    implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
-    compile("org.springframework.boot:spring-boot-starter-jetty")
+    implementation("org.springframework.boot:spring-boot-starter-jetty")
     // end::jetty[]
+
     // tag::actuator[]
-    compile("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-devtools")
     // end::actuator[]
-    compile("org.springframework.boot:spring-boot-devtools")
-    testCompile 'org.springframework.boot:spring-boot-starter-test:1.5.3.RELEASE'
-    testCompile 'io.rest-assured:rest-assured:3.0.5'
-    testCompile("junit:junit")
+
+    //JPA Support = H2 In memory Database
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    runtime("com.h2database:h2")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.assertj:assertj-core:3.10.0")
+    testImplementation("io.rest-assured:rest-assured:3.0.5")  // Uncomment for REST Assured Support
+    testImplementation("junit:junit")
 }
 
 test {
@@ -46,7 +56,7 @@ test {
         events "PASSED", "FAILED", "SKIPPED"
     }
 }
-	
+
 //springBoot {
-//    mainClass = "com.att.ticketwala.startup.TicketWalaStarter"
+//    mainClass = "com.att.app.Main"
 //}
