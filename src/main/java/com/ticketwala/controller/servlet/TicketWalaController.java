@@ -34,7 +34,7 @@ public class TicketWalaController {
 		return new ResponseEntity<MovieShow>(movieShow, s);
 	}
 	
-	//@RequestMapping(value = "/movie_show", method = RequestMethod.POST)
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createMovieShow(@RequestBody CreateMovieShowInput movieShowInput) {
